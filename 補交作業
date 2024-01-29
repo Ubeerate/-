@@ -1,0 +1,115 @@
+int LEDR = 11;       
+int LEDG = 10;       
+int LEDB = 9;   
+int sensorPin = A5; 
+int ledPin = 5;     
+int sensorValue = 0;
+int i;
+int a=1;
+int redVal= 255;    
+int greenVal= 0;    
+int blueVal=0;      
+#include <LiquidCrystal_PCF8574.h>
+LiquidCrystal_PCF8574 lcd(0x27);
+#include <Servo.h>
+Servo myservo;
+const int BUTTON_PIN = 7;
+int buttonState = 0;
+int degree = 0;
+
+int distance;
+String dist;
+
+void setup() {                
+  pinMode(LEDR, OUTPUT);
+  pinMode(LEDG, OUTPUT);
+  pinMode(LEDB, OUTPUT);
+  pinMode(ledPin, OUTPUT);  
+  lcd.begin(16, 2);
+  lcd.setBacklight(255);
+  lcd.clear();
+  myservo.attach(13);
+  pinMode(BUTTON_PIN, INPUT);
+  Serial.begin(9600);
+  
+
+}
+
+void loop() {
+  buttonState = digitalRead(BUTTON_PIN);
+  sensorValue = analogRead(sensorPin);   
+  sensorValue = map(sensorValue,0,1023,0,180);
+  lcd.setCursor(2, 0);
+  lcd.print("Degree:");
+  lcd.setCursor(2, 1);
+  lcd.print("Time:");
+  if (sensorValue<=45){
+    lcd.setCursor(9,0);
+    lcd.print("45");
+    lcd.setCursor(11,0);
+    lcd.print(" ");
+    degree = 45;
+    }
+    else if(sensorValue<=90 && sensorValue>45){
+      lcd.setCursor(9,0);
+      lcd.print("90");
+      lcd.setCursor(11,0);
+      lcd.print(" ");
+      degree = 90;
+    }
+    else if(sensorValue<=135 && sensorValue>90){
+      lcd.setCursor(9,0);
+      lcd.print("135");
+      degree = 135;
+    }
+    else if(sensorValue<=180 && sensorValue>135){
+      lcd.setCursor(9,0);
+      lcd.print("180");
+      degree = 180;
+    }
+  
+
+  if(buttonState == LOW){         
+    myservo.write(degree);
+    digitalWrite(ledPin,HIGH); 
+    delay(1500);
+    //for( i = 0 ; i < 255 ; i++ ){      
+    //redVal--;
+    //greenVal++;
+    //analogWrite( LEDR, redVal );
+    //analogWrite( LEDG, greenVal );
+    //delay(5);
+    //}
+    //for( i = 0 ; i < 255 ; i++ ){      
+    //greenVal--;
+    //blueVal++;
+    //analogWrite( LEDG, greenVal );
+    //analogWrite( LEDB, blueVal );
+    //delay(5);
+    //}
+    //for( i = 0 ; i < 255; i++ ){       
+    //blueVal--;
+    //redVal++;
+    //analogWrite( LEDB, blueVal );
+    //analogWrite( LEDR, redVal );
+    //delay(5);
+    //}
+  }
+  else{                          
+    myservo.write(0);
+    digitalWrite(ledPin,LOW); 
+  }
+  
+  int sv = analogRead(A4);
+  Serial.println(sv);
+  if(sv < 1000){   
+    digitalWrite(ledPin,HIGH); 
+    delay(1000);
+  }else{
+    digitalWrite(ledPin,LOW);  
+  }
+  
+
+
+}
+
